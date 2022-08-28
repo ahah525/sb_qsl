@@ -1,9 +1,6 @@
 package com.ll.exam.app3.user.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -12,6 +9,7 @@ import javax.persistence.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder    // 빌더는 내부적으로 전체 인자 생성자를 호출(전체 인자 생성자 필요)
 public class SiteUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
