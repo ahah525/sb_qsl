@@ -4,6 +4,8 @@ import com.ll.exam.app3.user.domain.SiteUser;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+
 import static com.ll.exam.app3.user.domain.QSiteUser.*;
 
 // 이름은 무조건 ~Impl 이어야함
@@ -44,5 +46,25 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
                 .orderBy(siteUser.id.asc())
                 .limit(1)
                 .fetchOne();
+    }
+
+    @Override
+    public List<SiteUser> getQslUsersOrderByIdAsc() {
+        return jpaQueryFactory
+                .select(siteUser)
+                .from(siteUser)
+                .orderBy(siteUser.id.asc())
+                .fetch();   // 리스트 조회
+    }
+
+    @Override
+    public List<SiteUser> searchQsl(String search) {
+        return jpaQueryFactory
+                .select(siteUser)
+                .from(siteUser)
+                .where(siteUser.username.contains(search)
+                        .or(siteUser.email.contains(search)))
+                .orderBy(siteUser.id.desc())
+                .fetch();
     }
 }
