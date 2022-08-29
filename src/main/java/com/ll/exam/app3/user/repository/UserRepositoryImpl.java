@@ -21,6 +21,18 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
                 .select(siteUser)
                 .from(siteUser)
                 .where(siteUser.id.eq(id))
-                .fetchOne();    // 단건 조회(없으면 null 반환)
+                .fetchOne();    // 단건 조회(없으면 null, 둘 이상이면 exception 반환)
+    }
+
+    @Override
+    public long getQslCount() {
+        /**
+         * SELECT *
+         * FROM site_user
+         */
+        return jpaQueryFactory
+                .select(siteUser.count())
+                .from(siteUser)
+                .fetchOne();
     }
 }
