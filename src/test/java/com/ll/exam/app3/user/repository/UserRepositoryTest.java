@@ -7,12 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import javax.transaction.Transactional;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+// @Test + @Transactional : 자동 rollback(DB 반영X)
+@Transactional  // 각 테스트 케이스에 전부 붙음
 @ActiveProfiles("test") // 테스트 모드 활성화
 class UserRepositoryTest {
     @Autowired
