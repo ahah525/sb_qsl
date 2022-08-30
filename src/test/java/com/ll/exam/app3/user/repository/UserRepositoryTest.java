@@ -9,7 +9,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 
 import javax.transaction.Transactional;
@@ -206,7 +205,7 @@ class UserRepositoryTest {
 
     @Test
     @DisplayName("회원에게 관심사를 등록할 수 있다.")
-    @Rollback(false)    // 데이터 잘 들어갔는지 확인하기 위해 롤백끄기
+//    @Rollback(false)    // 데이터 잘 들어갔는지 확인하기 위해 롤백끄기
     void t10() {
         SiteUser u2 = userRepository.getQslUser(2L);
 

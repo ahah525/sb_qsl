@@ -26,6 +26,7 @@ public class SiteUser {
     @Column(unique = true)
     private String email;
 
+    // TODO: Set(InterestKeyword)에서 hashCode, equals 오버라이드 필수
     // SiteUser : InterestKeyword = m : n
     @Builder.Default    // Builder 객체 생성될 때, 값이 보존됨(값을 넣지 않아도 null 안들어감)
     @ManyToMany(cascade = CascadeType.ALL)
