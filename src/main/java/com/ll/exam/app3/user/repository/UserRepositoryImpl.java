@@ -78,7 +78,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 
     @Override
     public Page<SiteUser> searchQsl(String kw, Pageable pageable) {
-
+        // TODO: 페이징은 해당 요청에 대한 엘리먼트를 리스트로 조회하는 쿼리(게시글 목록 조회 용도) & 전체 엘리먼트 수를 구하는 쿼리(페이지 번호 그리는 용도) 2개 날라감
         JPAQuery<SiteUser> usersQuery = jpaQueryFactory
                 .select(siteUser)
                 .from(siteUser)
