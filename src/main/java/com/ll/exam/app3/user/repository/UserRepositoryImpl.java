@@ -1,10 +1,13 @@
 package com.ll.exam.app3.user.repository;
 
+import com.ll.exam.app3.user.domain.QSiteUser;
 import com.ll.exam.app3.user.domain.SiteUser;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
 
 import java.util.List;
 
@@ -72,6 +75,26 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 
     @Override
     public Page<SiteUser> searchQsl(String kw, Pageable pageable) {
-        return null;
+        List<SiteUser> users = jpaQueryFactory
+                .select(QSiteUser.siteUser)
+                .from(QSiteUser.siteUser)
+                .where(QSiteUser.siteUser.username.contains(kw)
+                        .or(QSiteUser.siteUser.email.contains(kw)))
+                .offset(pageable.getOffset())   // 건너뛰어야하는 아이템 개수
+                .limit(pageable.getPageSize())  // 가져올 아이템 개수
+                .orderBy(siteUser.id.asc())
+                .fetch();
+
+        long count = jpaQueryFactory
+                .select(QSiteUser.siteUser.count())
+                .from(QSiteUser.siteUser)
+                .where(QSiteUser.siteUser.username.contains(kw)
+                        .or(QSiteUser.siteUser.email.contains(kw)))
+                .fetchOne();
+
+//        return new PageImpl<>(users, pageable, count);
+
+
+        return PageableExecutionUtils.getPage(users, pageable, () -> count);
     }
 }
