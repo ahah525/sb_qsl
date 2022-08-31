@@ -28,14 +28,17 @@ public class TestInitData {
                     .email("user2@test.com")
                     .build();
 
+            // TODO: 부모(회원)을 먼저 저장하여 영속화함
+            userRepository.saveAll(Arrays.asList(u1, u2));  // 영속화됨
+
             u1.addInterestKeywordContent("축구");
             u1.addInterestKeywordContent("농구");
 
             // TODO: saveAll이 될 때, InsertKeyword 테이블에 insert 농구가 2번 될 때 문제가 터짐
-//            u2.addInterestKeywordContent("농구");
+            u2.addInterestKeywordContent("농구");
             u2.addInterestKeywordContent("클라이밍");
             u2.addInterestKeywordContent("마라톤");
-            userRepository.saveAll(Arrays.asList(u1, u2));
+            userRepository.saveAll(Arrays.asList(u1, u2));  // 영속화됨
         };
     }
 }
