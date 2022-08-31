@@ -1,5 +1,6 @@
 package com.ll.exam.app3.user.repository;
 
+import com.ll.exam.app3.interestKeyword.domain.QInterestKeyword;
 import com.ll.exam.app3.user.domain.SiteUser;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
@@ -20,6 +21,8 @@ import static com.ll.exam.app3.user.domain.QSiteUser.siteUser;
 @RequiredArgsConstructor
 public class UserRepositoryImpl implements UserRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
+
+    // id로 회원 조회
     @Override
     public SiteUser getQslUser(Long id) {
         /**
@@ -34,6 +37,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
                 .fetchOne();    // 단건 조회(없으면 null, 둘 이상이면 exception 반환)
     }
 
+    // 모든 회원의 수 조회
     @Override
     public long getQslCount() {
         /**
@@ -46,6 +50,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
                 .fetchOne();
     }
 
+    // 회원 id 오름차순 정렬한 결과 1개 조회
     @Override
     public SiteUser getQslUserOrderByIdAscOne() {
         return jpaQueryFactory
@@ -56,6 +61,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
                 .fetchOne();
     }
 
+    // 회원 id 오름차순 정렬한 결과 리스트로 조회
     @Override
     public List<SiteUser> getQslUsersOrderByIdAsc() {
         return jpaQueryFactory
@@ -65,6 +71,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
                 .fetch();   // 리스트 조회
     }
 
+    // 회원 이름, 이메일로 회원 리스트 조회
     @Override
     public List<SiteUser> searchQsl(String search) {
         return jpaQueryFactory
@@ -76,6 +83,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
                 .fetch();
     }
 
+    // 회원 이름, 이메일로 회원 페이지로 반환
     @Override
     public Page<SiteUser> searchQsl(String kw, Pageable pageable) {
         // TODO: 페이징은 해당 요청에 대한 엘리먼트를 리스트로 조회하는 쿼리(게시글 목록 조회 용도) & 전체 엘리먼트 수를 구하는 쿼리(페이지 번호 그리는 용도) 2개 날라감
@@ -104,5 +112,31 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 //        return new PageImpl<>(users, pageable, count);
 
         return PageableExecutionUtils.getPage(users, pageable, usersCountQuery::fetchOne);
+    }
+
+    // 해당 관심사를 가진 회원 조회
+    @Override
+    public List<SiteUser> getQslUsersByInterestKeyword(String interestKeyword) {
+        /**
+         *        SELECT SU.*
+         *        FROM site_user AS SU
+         *        INNER JOIN site_user_interest_keywords AS SUIK
+         *        ON SU.id = SUIK.site_user_id
+         *        INNER JOIN interest_keyword AS IK
+         *        ON IK.content = SUIK.interest_keywords_content
+         *        WHERE IK.content = "축구";
+         */
+        QInterestKeyword IK = new QInterestKeyword("IK");   // AS
+        return jpaQueryFactory
+                .selectFrom(siteUser)
+                .innerJoin(siteUser.interestKeywords, IK)
+                .where(IK.content.eq(interestKeyword))
+                .fetch();
+
+//        return jpaQueryFactory
+//                .select(siteUser)
+//                .from(siteUser)
+//                .where(siteUser.interestKeywords.contains(new InterestKeyword(interestKeyword)))
+//                .fetch();
     }
 }
