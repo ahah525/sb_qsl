@@ -1,6 +1,5 @@
 package com.ll.exam.app3.user.repository;
 
-import com.ll.exam.app3.interestKeyword.domain.QInterestKeyword;
 import com.ll.exam.app3.user.domain.SiteUser;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
@@ -15,6 +14,7 @@ import org.springframework.data.support.PageableExecutionUtils;
 
 import java.util.List;
 
+import static com.ll.exam.app3.interestKeyword.domain.QInterestKeyword.interestKeyword;
 import static com.ll.exam.app3.user.domain.QSiteUser.siteUser;
 
 // 이름은 무조건 ~Impl 이어야함
@@ -116,7 +116,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 
     // 해당 관심사를 가진 회원 조회
     @Override
-    public List<SiteUser> getQslUsersByInterestKeyword(String interestKeyword) {
+    public List<SiteUser> getQslUsersByInterestKeyword(String ik) {
         /**
          *        SELECT SU.*
          *        FROM site_user AS SU
@@ -126,11 +126,11 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
          *        ON IK.content = SUIK.interest_keywords_content
          *        WHERE IK.content = "축구";
          */
-        QInterestKeyword IK = new QInterestKeyword("IK");   // AS
+//        QInterestKeyword IK = new QInterestKeyword("IK");   // AS
         return jpaQueryFactory
                 .selectFrom(siteUser)
-                .innerJoin(siteUser.interestKeywords, IK)
-                .where(IK.content.eq(interestKeyword))
+                .innerJoin(siteUser.interestKeywords, interestKeyword)
+                .where(interestKeyword.content.eq(ik))
                 .fetch();
 
 //        return jpaQueryFactory
