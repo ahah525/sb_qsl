@@ -233,4 +233,18 @@ class UserRepositoryTest {
         assertThat(u.getEmail()).isEqualTo("user1@test.com");
         assertThat(u.getPassword()).isEqualTo("{noop}1234");
     }
+
+    @Test
+    @DisplayName("Spring Data JPA 기본. 축구에 관심이 있는 회원을 검색할 수 있다.")
+    void t12() {
+        List<SiteUser> users = userRepository.findByInterestKeywords_content("축구");
+
+        SiteUser u = users.get(0);
+
+        assertThat(users.size()).isEqualTo(1);
+        assertThat(u.getId()).isEqualTo(1L);
+        assertThat(u.getUsername()).isEqualTo("user1");
+        assertThat(u.getEmail()).isEqualTo("user1@test.com");
+        assertThat(u.getPassword()).isEqualTo("{noop}1234");
+    }
 }
