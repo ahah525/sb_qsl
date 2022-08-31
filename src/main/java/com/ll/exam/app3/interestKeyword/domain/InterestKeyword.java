@@ -11,7 +11,7 @@ import javax.persistence.Id;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)   // 선택한 필드만 equals, hasCode로 관리
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)   // 선택한 필드만 equals, hashCode로 관리
 public class InterestKeyword {
     @Id
     @EqualsAndHashCode.Include
