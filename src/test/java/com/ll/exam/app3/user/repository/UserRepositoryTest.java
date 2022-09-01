@@ -16,6 +16,7 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -270,5 +271,30 @@ class UserRepositoryTest {
         u1.follow(u1);
 
         assertThat(u1.getFollowers().size()).isEqualTo(0);
+    }
+
+    @Test
+    @DisplayName("팔로잉, 팔로우 회원 확인하기")
+    @Rollback(value = false)
+    void t15() {
+        SiteUser u1 = userRepository.getQslUser(1L);
+        SiteUser u2 = userRepository.getQslUser(2L);
+
+        // u1 -> u2
+        u1.follow(u2);
+
+        Set<SiteUser> u1Followers = u1.getFollowers();
+        Set<SiteUser> u1Followings = u1.getFollowings();
+
+        assertThat(u1Followers.size()).isEqualTo(0);
+        assertThat(u1Followings.size()).isEqualTo(1);
+        assertThat(u1Followings.contains(u2)).isTrue();
+
+        Set<SiteUser> u2Followers = u2.getFollowers();
+        Set<SiteUser> u2Followings = u2.getFollowings();
+
+        assertThat(u2Followers.size()).isEqualTo(1);
+        assertThat(u2Followers.contains(u1)).isTrue();
+        assertThat(u2Followings.size()).isEqualTo(0);
     }
 }

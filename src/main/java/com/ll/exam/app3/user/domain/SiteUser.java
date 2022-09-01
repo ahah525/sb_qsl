@@ -34,7 +34,11 @@ public class SiteUser {
 
     @Builder.Default
     @ManyToMany(cascade = CascadeType.ALL)
-    private Set<SiteUser> followers = new HashSet<>();
+    private Set<SiteUser> followers = new HashSet<>();  // 팔로워
+
+    @Builder.Default
+    @ManyToMany(cascade = CascadeType.ALL)
+    private Set<SiteUser> followings = new HashSet<>(); // 팔로잉
 
     public void addInterestKeywordContent(String keywordContent) {
         interestKeywords.add(new InterestKeyword(keywordContent));
@@ -46,5 +50,14 @@ public class SiteUser {
         if(this.getId() == following.getId()) return;
 
         following.getFollowers().add(this);
+        followings.add(following);
+    }
+
+    public Set<SiteUser> getFollowers() {
+        return followers;
+    }
+
+    public Set<SiteUser> getFollowings() {
+        return followings;
     }
 }
