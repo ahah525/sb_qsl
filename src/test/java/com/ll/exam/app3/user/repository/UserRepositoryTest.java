@@ -32,19 +32,19 @@ class UserRepositoryTest {
     @DisplayName("회원 생성")
     void t1() {
         // {noop}: 암호화되지 않은 평문 비밀번호
-        SiteUser u3 = SiteUser.builder()
-                .username("user3")
+        SiteUser u9 = SiteUser.builder()
+                .username("user9")
                 .password("{noop}1234")
-                .email("user3@test.com")
+                .email("user9@test.com")
                 .build();
 
-        SiteUser u4 = SiteUser.builder()
-                .username("user4")
+        SiteUser u10 = SiteUser.builder()
+                .username("user10")
                 .password("{noop}1234")
-                .email("user4@test.com")
+                .email("user10@test.com")
                 .build();
 
-        userRepository.saveAll(Arrays.asList(u3, u4));
+        userRepository.saveAll(Arrays.asList(u9, u10));
     }
 
     @Test
@@ -126,26 +126,27 @@ class UserRepositoryTest {
     @Test
     @DisplayName("검색, Page 리턴, id ASC, pageSize=1, page=1")
     void t8() {
-        long totalCount = userRepository.count();   // 총 아이템 개수
+        long totalCount = userRepository.count();
         int pageSize = 1; // 한 페이지에 보여줄 아이템 개수
-        int totalPage = (int) Math.ceil(totalCount / pageSize); // 전체 페이지수
+        int totalPages = (int) Math.ceil(totalCount / (double) pageSize);
         int page = 1;
-        String kw = "user"; // 검색어
+        String kw = "user";
 
         List<Sort.Order> sorts = new ArrayList<>();
         sorts.add(Sort.Order.asc("id"));
-        // (가져올 페이지, 페이지 크기, 정렬기준)
-        Pageable pageable = PageRequest.of(page, pageSize, Sort.by(sorts));
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by(sorts)); // 한 페이지에 10까지 가능
         Page<SiteUser> usersPage = userRepository.searchQsl(kw, pageable);
-        //
-        assertThat(usersPage.getTotalPages()).isEqualTo(2); // 전체 페이지수
-        assertThat(usersPage.getNumber()).isEqualTo(page);              // 현재 페이지 번호
+
+        assertThat(usersPage.getTotalPages()).isEqualTo(totalPages);
+        assertThat(usersPage.getNumber()).isEqualTo(page);
         assertThat(usersPage.getSize()).isEqualTo(pageSize);
 
         List<SiteUser> users = usersPage.get().toList();
+
+        assertThat(users.size()).isEqualTo(pageSize);
+
         SiteUser u = users.get(0);
 
-        assertThat(users.size()).isEqualTo(1);
         assertThat(u.getId()).isEqualTo(2L);
         assertThat(u.getUsername()).isEqualTo("user2");
         assertThat(u.getEmail()).isEqualTo("user2@test.com");
@@ -183,25 +184,21 @@ class UserRepositoryTest {
         int totalPages = (int) Math.ceil(totalCount / (double) pageSize);
         int page = 1;
         String kw = "user";
-
         List<Sort.Order> sorts = new ArrayList<>();
         sorts.add(Sort.Order.desc("id"));
         Pageable pageable = PageRequest.of(page, pageSize, Sort.by(sorts)); // 한 페이지에 10까지 가능
         Page<SiteUser> usersPage = userRepository.searchQsl(kw, pageable);
-
         assertThat(usersPage.getTotalPages()).isEqualTo(totalPages);
         assertThat(usersPage.getNumber()).isEqualTo(page);
         assertThat(usersPage.getSize()).isEqualTo(pageSize);
-
         List<SiteUser> users = usersPage.get().toList();
-
         assertThat(users.size()).isEqualTo(pageSize);
 
         SiteUser u = users.get(0);
 
-        assertThat(u.getId()).isEqualTo(1L);
-        assertThat(u.getUsername()).isEqualTo("user1");
-        assertThat(u.getEmail()).isEqualTo("user1@test.com");
+        assertThat(u.getId()).isEqualTo(7L);
+        assertThat(u.getUsername()).isEqualTo("user7");
+        assertThat(u.getEmail()).isEqualTo("user7@test.com");
         assertThat(u.getPassword()).isEqualTo("{noop}1234");
     }
 
