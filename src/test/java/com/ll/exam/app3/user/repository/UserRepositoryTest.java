@@ -294,4 +294,12 @@ class UserRepositoryTest {
         assertThat(u2Followers.contains(u1)).isTrue();
         assertThat(u2Followings.size()).isEqualTo(0);
     }
+
+    @Test
+    @DisplayName("u1은 더이상 농구에 관심이 없습니다.")
+    void t16() {
+        SiteUser u1 = userRepository.getQslUser(1L);
+
+        u1.removeInterestKeywordContent("농구");
+    }
 }

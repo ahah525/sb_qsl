@@ -28,8 +28,9 @@ public class SiteUser {
 
     // TODO: Set(InterestKeyword)에서 hashCode, equals 오버라이드 필수
     // SiteUser : InterestKeyword = m : n
+    // orphanRemoval : interestKeywords(부모)에서 객체를 삭제하면 interestKeyword(자식)에서 자동 삭제 (OneToMany에서만 씀)
     @Builder.Default    // Builder 객체 생성될 때, 값이 보존됨(값을 넣지 않아도 null 안들어감)
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", orphanRemoval = true)
     private Set<InterestKeyword> interestKeywords = new HashSet<>();    // 등록 키워드들
 
     @Builder.Default
@@ -42,6 +43,11 @@ public class SiteUser {
 
     public void addInterestKeywordContent(String keywordContent) {
         interestKeywords.add(new InterestKeyword(this, keywordContent));
+    }
+
+    public void removeInterestKeywordContent(String keywordContent) {
+        // orphanRemoval = true 로 설정되었을 때, 해당 메서드 실행시 자동으로 interestRepository.delete();
+        interestKeywords.remove(new InterestKeyword(this, keywordContent));
     }
 
     public void follow(SiteUser following) {
