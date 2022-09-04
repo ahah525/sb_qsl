@@ -64,9 +64,6 @@ public class TestInitData {
                     .email("user8@test.com")
                     .build();
 
-//            // TODO: 부모(회원)을 먼저 저장하여 영속화함(OneToMany로 바꿨으니 삭제)
-//            userRepository.saveAll(Arrays.asList(u1, u2));  // 영속화됨(PERSIST)
-
             u1.addInterestKeywordContent("축구");
             u1.addInterestKeywordContent("농구");
 
@@ -75,7 +72,20 @@ public class TestInitData {
             u2.addInterestKeywordContent("클라이밍");
             u2.addInterestKeywordContent("마라톤");
 
-            userRepository.saveAll(Arrays.asList(u1, u2, u3, u4, u5, u6, u7, u8));
+            userRepository.saveAll(Arrays.asList(u1, u2, u3, u4, u5, u6, u7, u8)); // PERSIST
+
+            u8.follow(u7);
+            u8.follow(u6);
+            u8.follow(u5);
+            u8.follow(u4);
+            u8.follow(u3);
+
+            u7.follow(u6);
+            u7.follow(u5);
+            u7.follow(u4);
+            u7.follow(u3);
+
+            userRepository.saveAll(Arrays.asList(u1, u2, u3, u4, u5, u6, u7, u8)); // MERGE
         };
     }
 }
