@@ -29,7 +29,7 @@ public class SiteUser {
     // TODO: Set(InterestKeyword)에서 hashCode, equals 오버라이드 필수
     // SiteUser : InterestKeyword = m : n
     @Builder.Default    // Builder 객체 생성될 때, 값이 보존됨(값을 넣지 않아도 null 안들어감)
-    @ManyToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private Set<InterestKeyword> interestKeywords = new HashSet<>();    // 등록 키워드들
 
     @Builder.Default
@@ -41,7 +41,7 @@ public class SiteUser {
     private Set<SiteUser> followings = new HashSet<>(); // 팔로잉
 
     public void addInterestKeywordContent(String keywordContent) {
-        interestKeywords.add(new InterestKeyword(keywordContent));
+        interestKeywords.add(new InterestKeyword(this, keywordContent));
     }
 
     public void follow(SiteUser following) {
@@ -50,7 +50,7 @@ public class SiteUser {
         if(this.getId() == following.getId()) return;
 
         following.getFollowers().add(this);
-        followings.add(following);
+        getFollowings().add(following);
     }
 
     public Set<SiteUser> getFollowers() {
