@@ -1,5 +1,6 @@
 package com.ll.exam.app3.user.repository;
 
+import com.ll.exam.app3.user.domain.QSiteUser;
 import com.ll.exam.app3.user.domain.SiteUser;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
@@ -138,5 +139,29 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 //                .from(siteUser)
 //                .where(siteUser.interestKeywords.contains(new InterestKeyword(interestKeyword)))
 //                .fetch();
+    }
+
+
+    @Override
+    public List<String> getByInterestKeywordContents_byFollowingsOf(SiteUser user) {
+        /**
+         * # ?번회원이 follow 한 회원들의 관심사들을 중복없이 조회하는 SQL
+         *
+         * SELECT DISTINCT IK.content
+         * FROM interest_keyword AS IK
+         * INNER JOIN site_user_followings AS SUF
+         * ON IK.user_id = SUF.followings_id
+         * WHERE SUF.site_user_id = ?;
+         */
+        QSiteUser siteUser2 = new QSiteUser("siteUser2");
+
+        return jpaQueryFactory
+                .select(interestKeyword.content)
+                .distinct()
+                .from(interestKeyword)
+                .innerJoin(interestKeyword.user, siteUser)
+                .innerJoin(siteUser.followers, siteUser2)
+                .where(siteUser2.id.eq(user.getId()))
+                .fetch();
     }
 }
